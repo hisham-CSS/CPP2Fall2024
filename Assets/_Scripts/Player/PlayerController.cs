@@ -2,13 +2,15 @@ using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 
-[RequireComponent(typeof(CharacterController), typeof(Animator))]
+[RequireComponent(typeof(CharacterController), typeof(Animator), typeof(Health))]
 public class PlayerController : MonoBehaviour
 {
     //Controller components   
     CharacterController cc;
     Animator anim;
+    Health health;
 
     //movement and rotation speed
     [Header("Movement Variables")]
@@ -52,6 +54,7 @@ public class PlayerController : MonoBehaviour
     {
         cc = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
+        health = GetComponent<Health>();
 
         currentSpeed = speed;
 
@@ -147,6 +150,16 @@ public class PlayerController : MonoBehaviour
         if (hit.collider.CompareTag("Weapon") && weapon == null) {
             weapon = hit.gameObject.GetComponent<Weapon>();
             weapon.Equip(GetComponent<Collider>(), weaponAttachPoint);
+        }
+
+        
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Heal"))
+        {
+            health.health++;
         }
     }
 
